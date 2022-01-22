@@ -89,6 +89,16 @@ FROM (SELECT e.name "Employee", d.name "Department", salary, departmentId,
      ON e.departmentId = d.id) t
 WHERE ranking <= 3;
 
+Solution 2 (Window Function + join)
+
+SELECT d.name "Department", t.name "Employee", t.salary
+FROM (SELECT e.*, 
+      DENSE_RANK() OVER(PARTITION BY departmentId ORDER BY salary DESC) "ranking"
+     FROM Employee e) t
+JOIN Department d
+ON t.departmentId = d.id
+WHERE ranking <= 3;
+
 
 
 
