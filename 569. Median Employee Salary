@@ -58,12 +58,24 @@ Output:
 
 Follow up: Could you solve it without using any built-in or window functions?
 
-Solution:
+Solution 1 (median between number of id/2 and (number of id/2)+1) :
 
 SELECT id, company, salary
 FROM (SELECT *, ROW_NUMBER() OVER(PARTITION BY company ORDER BY salary) "ranking",
      COUNT(id) OVER(PARTITION BY company) "cnt"
      FROM Employee) t
 WHERE ranking BETWEEN cnt/2 AND cnt/2+1;
+
+Solution 2:
+
+SELECT id, company, salary
+FROM (SELECT *, ROW_NUMBER() OVER(PARTITION BY company ORDER BY salary, id) "ascing",
+     ROW_NUMBER() OVER(PARTITION BY company ORDER BY salary DESC, id DESC) "descing"
+     FROM Employee) e1
+WHERE ascing BETWEEN descing - 1 AND descing + 1;
+
+
+
+
 
 
