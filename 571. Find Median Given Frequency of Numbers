@@ -39,7 +39,7 @@ Output:
 Explanation: 
 If we decompress the Numbers table, we will get [0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3], so the median is (0 + 0) / 2 = 0.
 
-Solution:
+Solution 1:
 
 SELECT AVG(num) "median"
 FROM (SELECT *, 
@@ -48,3 +48,11 @@ FROM (SELECT *,
      FROM Numbers) t
 WHERE mid BETWEEN freq-frequency AND freq;
 
+Solution 2 (inspired by median salary solution):
+
+SELECT ROUND(AVG(num), 1) "median"
+FROM (SELECT *, 
+      SUM(frequency) OVER(ORDER BY num) "ascing",
+      SUM(frequency) OVER(ORDER BY num DESC) "descing"
+     FROM Numbers) t1
+WHERE ABS(ascing - descing) <= frequency;
